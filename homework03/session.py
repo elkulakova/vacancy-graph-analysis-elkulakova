@@ -1,8 +1,10 @@
+"""Реализация класса сессии для отслеживания ошибок при запросах"""
+
 import typing as tp
 
 import requests
 from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry # type: ignore
+from requests.packages.urllib3.util.retry import Retry  # type: ignore
 
 
 class Session:
@@ -22,10 +24,67 @@ class Session:
         max_retries: int = 3,
         backoff_factor: float = 0.3,
     ) -> None:
-        pass
+        self.base_url = base_url
+        self.timeout = timeout
+        self.max_retries = max_retries
+        self.backoff_factor = backoff_factor
 
     def get(self, url: str, *args: tp.Any, **kwargs: tp.Any) -> requests.Response:
-        pass
+        """
+        Проверка get-запроса
+        """
+        whole_url = f"{self.base_url}/{url}".lstrip("/")
+
+        s = requests.Session()
+        retries = Retry(
+            total=self.max_retries,
+            backoff_factor=self.backoff_factor,
+            status_forcelist=args if args else [500, 502, 503, 504, 408, 429],
+        )
+        s.mount("https://", HTTPAdapter(max_retries=retries))
+        s.mount("http://", HTTPAdapter(max_retries=retries))
+
+        for _ in range(self.max_retries + 1):
+            try:
+                response = s.get(
+                    url=whole_url,
+                    params=kwargs.get("params"),
+                    headers=kwargs.get("headers"),
+                    timeout=self.timeout,
+                    **{k: v for k, v in kwargs.items() if k not in ("params", "headers")},
+                )
+                response.raise_for_status()
+                return response
+            except requests.exceptions.RequestException as e:
+                raise e
+        return None
 
     def post(self, url: str, *args: tp.Any, **kwargs: tp.Any) -> requests.Response:
-        pass
+        """
+        Проверка post-запроса
+        """
+        whole_url = f"{self.base_url}/{url}".lstrip("/")
+
+        s = requests.Session()
+        retries = Retry(
+            total=self.max_retries,
+            backoff_factor=self.backoff_factor,
+            status_forcelist=args if args else [500, 502, 503, 504, 408, 429],
+        )
+        s.mount("https://", HTTPAdapter(max_retries=retries))
+        s.mount("http://", HTTPAdapter(max_retries=retries))
+
+        for _ in range(self.max_retries + 1):
+            try:
+                response = s.post(
+                    url=whole_url,
+                    params=kwargs.get("params"),
+                    headers=kwargs.get("headers"),
+                    timeout=self.timeout,
+                    **{k: v for k, v in kwargs.items() if k not in ("params", "headers")},
+                )
+                response.raise_for_status()
+                return response
+            except requests.exceptions.RequestException as e:
+                raise e
+        return None
