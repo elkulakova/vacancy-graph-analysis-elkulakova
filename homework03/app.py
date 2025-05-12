@@ -6,15 +6,15 @@ import dash
 import networkx as nx
 import pandas as pd
 import plotly.express as px  # type: ignore
-from dash import dash_table, dcc, html # type: ignore
+from dash import dash_table, dcc, html  # type: ignore
 from flask import Flask, render_template
 
 from network import *
 
 # загрузка данных: эту часть необходимо изменить и дополнить в соответствии с вашими данными
-#orig_df = pd.read_csv("python_300_vac.csv")
-#orig_df["tokens"] = orig_df.requirement.apply(preprocess_text)
-#kdf = orig_df
+# orig_df = pd.read_csv("python_300_vac.csv")
+# orig_df["tokens"] = orig_df.requirement.apply(preprocess_text)
+# kdf = orig_df
 
 # для сокращения времени выполнения кода заранее сохранила файл с токенами
 kdf = pd.read_csv("python_300_vac_tokens.csv")
@@ -51,7 +51,7 @@ dash_dashboard_app.layout = html.Div(
         html.H2("📊 Исходные данные"),
         html.A("← Назад", href="/", style={"color": "#28a745", "textDecoration": "none", "fontSize": "1.1em"}),
         dcc.Graph(figure=fig, style={"marginBottom": "10px", "marginTop": "10px"}),
-        dash_table.DataTable( # type: ignore
+        dash_table.DataTable(  # type: ignore
             data=keywords_show.to_dict("records"),
             columns=[{"name": i, "id": i} for i in keywords_show.columns],
             style_cell={"textAlign": "center", "padding": "1px"},

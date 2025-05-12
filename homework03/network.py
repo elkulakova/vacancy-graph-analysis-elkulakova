@@ -14,7 +14,7 @@ import pandas as pd
 import plotly.graph_objects as go  # type: ignore
 import spacy
 from matplotlib import colormaps
-from sklearn.feature_extraction.text import TfidfVectorizer # type: ignore
+from sklearn.feature_extraction.text import TfidfVectorizer  # type: ignore
 
 
 def preprocess_text(text: str) -> str:
