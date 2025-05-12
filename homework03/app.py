@@ -5,8 +5,8 @@ from copy import deepcopy
 import dash
 import networkx as nx
 import pandas as pd
-import plotly.express as px
-from dash import dash_table, dcc, html
+import plotly.express as px  # type: ignore
+from dash import dash_table, dcc, html # type: ignore
 from flask import Flask, render_template
 
 from network import *
@@ -51,7 +51,7 @@ dash_dashboard_app.layout = html.Div(
         html.H2("📊 Исходные данные"),
         html.A("← Назад", href="/", style={"color": "#28a745", "textDecoration": "none", "fontSize": "1.1em"}),
         dcc.Graph(figure=fig, style={"marginBottom": "10px", "marginTop": "10px"}),
-        dash_table.DataTable(
+        dash_table.DataTable( # type: ignore
             data=keywords_show.to_dict("records"),
             columns=[{"name": i, "id": i} for i in keywords_show.columns],
             style_cell={"textAlign": "center", "padding": "1px"},
@@ -66,7 +66,7 @@ dash_dashboard_app.layout = html.Div(
 # строим связи
 graph_edges = create_network(keywords)
 # сам граф
-G = nx.Graph()
+G: nx.Graph = nx.Graph()
 G.add_edges_from(graph_edges)
 # сообщества
 comms, subgr = get_communities(G)
@@ -75,7 +75,7 @@ whole_graph = plot_communities(comms, subgr)
 vis_data = []
 for i, comm in enumerate(comms):
     subgraph = plot_one_community(subgr, comm, i + 1)
-    skills_df = frequently_used_skills(comm, keywords)[:7]
+    skills_df = frequently_used_skills(comm, keywords)[:10]
     subfig = px.bar(skills_df, x="skill", y="frequency", title="Самые частые навыки")
     vis_data.append((subgraph, subfig))
 

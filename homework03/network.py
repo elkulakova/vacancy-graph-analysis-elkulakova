@@ -11,10 +11,10 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 import pandas as pd
-import plotly.graph_objects as go
+import plotly.graph_objects as go  # type: ignore
 import spacy
 from matplotlib import colormaps
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer # type: ignore
 
 
 def preprocess_text(text: str) -> str:
@@ -292,7 +292,7 @@ if __name__ == "__main__":
     # plot_network(graf_edges)
 
     # сам граф
-    graf = nx.Graph()
+    graf: nx.Graph = nx.Graph()
     graf.add_edges_from(graf_edges)
 
     # сообщества

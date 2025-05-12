@@ -57,7 +57,7 @@ class Session:
                 return response
             except requests.exceptions.RequestException as e:
                 raise e
-        return None
+        return s.get(url=whole_url, params=kwargs.get("params"), headers=kwargs.get("headers"), timeout=self.timeout, **{k: v for k, v in kwargs.items() if k not in ("params", "headers")},)
 
     def post(self, url: str, *args: tp.Any, **kwargs: tp.Any) -> requests.Response:
         """
@@ -87,4 +87,4 @@ class Session:
                 return response
             except requests.exceptions.RequestException as e:
                 raise e
-        return None
+        return s.post(url=whole_url, params=kwargs.get("params"), headers=kwargs.get("headers"), timeout=self.timeout, **{k: v for k, v in kwargs.items() if k not in ("params", "headers")},)
