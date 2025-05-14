@@ -44,11 +44,9 @@ def get_keywords(df, n_keywords=5):
     df: входной датафрейм
     n_keywords: число ключевых слов, которое надо извлечь
     """
-    # а по-другому и не передать обработанный дф...
     if "tokens" not in df.columns:
         df["tokens"] = df.requirement.apply(preprocess_text)
         df.to_csv("python_300_vac_tokens.csv", index=False)
-        print("done")
 
     tokens = df.tokens.to_list()
     vectorizer = TfidfVectorizer()

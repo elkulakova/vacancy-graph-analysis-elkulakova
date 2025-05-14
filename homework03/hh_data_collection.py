@@ -19,6 +19,7 @@ def get_vacancies(pages, tag):
     url = "https://api.hh.ru/vacancies"
     headers = {"User-Agent": "example@yandex.ru"}
     found_vacancies = []
+    seen_ids = set()
 
     s = session.Session(url)
 
@@ -30,21 +31,19 @@ def get_vacancies(pages, tag):
             response = s.get(url="", params={"text": tag, "per_page": 100, "page": p}, headers=headers)
             response.raise_for_status()
 
-            print(response.json())
-
-            found_vacancies.extend(
-                [
-                    (r["id"], r["name"], r["snippet"]["requirement"], r["snippet"]["responsibility"])
-                    for r in response.json()["items"]
-                ]
-            )
+            for r in response.json()["items"]:
+                if r["id"] not in seen_ids:
+                    seen_ids.add(r["id"])
+                    found_vacancies.append(
+                        (r["id"], r["name"], r["snippet"].get("requirement"), r["snippet"].get("responsibility"))
+                    )
 
             time.sleep(0.1)
 
     except requests.exceptions.RequestException as e:
         print("Error occurred while pooling data:")
         raise e
-    # подумать, делать ли проверку, что вакансий 200-300
+
     return found_vacancies
 
 

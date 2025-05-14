@@ -44,26 +44,15 @@ class Session:
         s.mount("https://", HTTPAdapter(max_retries=retries))
         s.mount("http://", HTTPAdapter(max_retries=retries))
 
-        for _ in range(self.max_retries + 1):
-            try:
-                response = s.get(
-                    url=whole_url,
-                    params=kwargs.get("params"),
-                    headers=kwargs.get("headers"),
-                    timeout=self.timeout,
-                    **{k: v for k, v in kwargs.items() if k not in ("params", "headers")},
-                )
-                response.raise_for_status()
-                return response
-            except requests.exceptions.RequestException as e:
-                raise e
-        return s.get(
+        response = s.get(
             url=whole_url,
             params=kwargs.get("params"),
             headers=kwargs.get("headers"),
             timeout=self.timeout,
             **{k: v for k, v in kwargs.items() if k not in ("params", "headers")},
         )
+        response.raise_for_status()
+        return response
 
     def post(self, url: str, *args: tp.Any, **kwargs: tp.Any) -> requests.Response:
         """
@@ -80,23 +69,12 @@ class Session:
         s.mount("https://", HTTPAdapter(max_retries=retries))
         s.mount("http://", HTTPAdapter(max_retries=retries))
 
-        for _ in range(self.max_retries + 1):
-            try:
-                response = s.post(
-                    url=whole_url,
-                    params=kwargs.get("params"),
-                    headers=kwargs.get("headers"),
-                    timeout=self.timeout,
-                    **{k: v for k, v in kwargs.items() if k not in ("params", "headers")},
-                )
-                response.raise_for_status()
-                return response
-            except requests.exceptions.RequestException as e:
-                raise e
-        return s.post(
+        response = s.post(
             url=whole_url,
             params=kwargs.get("params"),
             headers=kwargs.get("headers"),
             timeout=self.timeout,
             **{k: v for k, v in kwargs.items() if k not in ("params", "headers")},
         )
+        response.raise_for_status()
+        return response
