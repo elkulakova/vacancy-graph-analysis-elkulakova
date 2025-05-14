@@ -39,7 +39,7 @@ class Session:
         retries = Retry(
             total=self.max_retries,
             backoff_factor=self.backoff_factor,
-            status_forcelist=args if args else [500, 502, 503, 504, 408, 429],
+            status_forcelist=args if args else [403, 404, 408, 429, 500, 502, 503, 504],
         )
         s.mount("https://", HTTPAdapter(max_retries=retries))
         s.mount("http://", HTTPAdapter(max_retries=retries))
